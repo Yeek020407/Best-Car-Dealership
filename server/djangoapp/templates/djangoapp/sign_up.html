@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+
+<body>
+
+    <nav class="navbar navbar-light" style="background-color: #e3f2fd">
+        <a class="navbar-brand" href="{% url 'djangoapp:index' %}">
+            <!-- <img src="" width="30" height="30" class="d-inline-block align-top" alt=""> -->
+            Best Car Dealership
+        </a>
+        
+        
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a class="btn btn-link" href="{% url 'djangoapp:about' %}">
+                    About Us
+                </a>
+                
+                <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">
+                    Contact Us
+                </a>
+                {% if user.is_authenticated %}
+                <a>
+                    ({{user.first_name}}) {{user.username}}
+                </a>
+                <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+                {% else %}
+                <a>
+                
+                <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" placeholder="Username" name="username">
+                    <input type="password" class="form-control" placeholder="Password" name="psw">
+                    <button class="btn btn-primary" type="submit">Login</button>
+                    <a class="btn btn-link" href="{% url 'djangoapp:register' %}">Sign Up</a>
+                </form>
+                </a>
+
+                {% endif %}
+            </li>
+            
+            
+
+        </ul>
+       
+    </nav>
+
+
+
+    <div class="container">
+        <h1>
+            Sign Up
+        </h1>
+        <form action="{% url 'djangoapp:register' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="inputUsername">Username</label>
+                <input type="text" class="form-control" id="inputUsername" placeholder="Enter username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="inputPassword">Password</label>
+                <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="psw">
+            </div>
+            <div class="form-group">
+                <label for="inputFirstName">First Name</label>
+                <input type="text" class="form-control" id="inputFirstName" placeholder="First Name" name="first_name">
+            </div>
+            <div class="form-group">
+                <label for="inputLastName">LastName</label>
+                <input type="text" class="form-control" id="inputLastName" placeholder="Last Name" name="last_name">
+            </div>
+            {% if message %}
+            <div class="alert alert-warning">
+                {{message}}
+            </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    
+
+
+
+
+
+</body>
+
+
+
+</html>

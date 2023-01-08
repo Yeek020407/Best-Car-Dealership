@@ -30,17 +30,49 @@ def contact(request):
     if request.method == "GET":
         return render(request,'djangoapp/contact_us.html',context)
 
-# Create a `login_request` view to handle sign in request
-# def login_request(request):
-# ...
+
+def login_request(request):
+    context={}
+    if request.method == "POST":
+        username=request.POST['username']
+        password=request.POST['psw']
+        user = authenticate(username=username,password=password)
+        if user is not None:
+            login(request,user)
+            return redirect('djangoapp:index')
+        else:
+            context['message']="Invalid username or password"
+            return render(request,'djangoapp:login',context)
 
 # Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
+def logout_request(request):
+    logout(request)
+    return redirect('djangoapp:index')
 
 # Create a `registration_request` view to handle sign up request
-# def registration_request(request):
-# ...
+def registration_request(request):
+    context={}
+    if request.method=="GET":
+        return render(request,'djangoapp/sign_up.html',context)
+    elif request.method=="POST":
+        username = request.POST['username']
+        password = request.POST['psw']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        user_exist = False
+        try:
+            User.objects.get(username=username)
+            user_exist = True
+        except:
+            logger.error("New User")
+        
+        if not user_exist:
+            user = User.objects.create(username=username,password=password,first_name=first_name,last_name=last_name)
+            login(request,user)
+            return redirect('djangoapp:index')
+        else:
+            context['message']="User already exist"
+            return render(request,'djangoapp/sign_up.html',context)
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
