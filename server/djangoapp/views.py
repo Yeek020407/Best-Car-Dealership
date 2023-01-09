@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
+from .restapis import get_dealers_from_cf,get_dealer_by_id_from_cf,get_dealer_by_id,post_request
 import logging
 import json
 
@@ -78,14 +79,83 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        
+        url = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/dealership"
+        dealerships = get_dealers_from_cf(url)
+        context['dealers']=dealerships
+        return render(request,'djangoapp/index.html',context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, dealer_id):
+    context={}
+    if request.method =="GET":
+        url1 = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/review"
+        url2 = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/dealership"
+        reviews = get_dealer_by_id_from_cf(url1,dealer_id)
+        dealer_details = get_dealer_by_id(url2,dealer_id)
+        context['reviews']=reviews
+        print(reviews)
+        context['dealer_details']=dealer_details
+        return render(request,'djangoapp/dealer_details.html',context)
+
+
+
+
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    user = request.user
+    if request.method == "GET":
+        if user.is_authenticated:
+            context ={}
+            context['dealer_id']=dealer_id
+            return render(request,'djangoapp/add_review.html',context)
+        else:
+            context={}
+            context['message']="Please login/signup so that you can leave review for the dealers!"
+            return render(request,'djangoapp/sign_up.html',context)
+    elif request.method =="POST":
+        context={}
+        if user.is_authenticated:
+            try:
+                payload = {}
+                review_details = {}
+                review_details['dealership']=dealer_id
+                review_details['name']  = user.first_name + " " + user.last_name
+                request.POST['purchase']
+                review_details['purchase'] = True
+                review_details['review'] = request.POST.get('review')
+                review_details['purchase_date'] =request.POST['purchase_date']
+                review_details['car_make'] = request.POST['car_make']
+                review_details['car_model'] = request.POST['car_model']
+                review_details['car_year'] = request.POST['car_year']
+                review_details['id'] = user.id
+                payload['review']=review_details
+                url = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/review"
+                post_request(url,payload)
+                context['message']="The review is successfully added!"
+                context['dealer_id']=dealer_id
+                return render(request,'djangoapp/add_review.html',context)
 
+            except:
+                payload = {}
+                review_details = {}
+                review_details['name']  = user.first_name + " " + user.last_name
+                review_details['dealership']=dealer_id
+                review_details['review'] = request.POST.get('review')
+                review_details['purchase']=False
+                review_details['purchase_date'] = False
+                review_details['car_make'] = False
+                review_details['car_model'] = False
+                review_details['car_year'] = False
+                review_details['id'] = user.id
+                payload['review']=review_details
+                url = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/review"
+                post_request(url,payload)
+                context['message']="The review is successfully added!"
+                context['dealer_id']=dealer_id
+                return render(request,'djangoapp/add_review.html',context)
+       
+
+    

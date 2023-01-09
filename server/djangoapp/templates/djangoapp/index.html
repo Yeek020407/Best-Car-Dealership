@@ -56,8 +56,37 @@
             </ul>
            
         </nav>
-
-
+        
+        <div class="container">
+            <h2>Our Dealers</h2>
+            <div class="row">
+                {% for dealer in dealers %}
+                
+                <div class="col-sm-4">
+                    <div class="card bg-ligt mb-3" style="max-width: 20rem;">
+                
+                        
+                            <div class="card-header">
+                                {{dealer.short_name}}
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{dealer.full_name}}</h5>
+                            <p class="card-text">State : {{dealer.state}}</p>
+                            <p class="card-text">Address : {{dealer.address}}</p>
+                            <a href="{% url 'djangoapp:dealer_details' dealer.id %}" class="btn btn-primary">Get Details</a>
+                            </div>
+                            
+                        
+                        
+                    
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        
+        
 
 
     <!--Add a dealer table here -->

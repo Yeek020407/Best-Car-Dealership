@@ -11,6 +11,89 @@
 
 </head>
     <body>
-    <!--Add review form here -->
+        <nav class="navbar navbar-light" style="background-color: #e3f2fd">
+            <a class="navbar-brand" href="{% url 'djangoapp:index' %}">
+                <!-- <img src="" width="30" height="30" class="d-inline-block align-top" alt=""> -->
+                Best Car Dealership
+            </a>
+            
+            
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="btn btn-link" href="{% url 'djangoapp:about' %}">
+                        About Us
+                    </a>
+                    
+                    <a class="btn btn-link" href="{% url 'djangoapp:contact' %}">
+                        Contact Us
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a>
+                        {{user.first_name}} {{user.username}}
+                    </a>
+                    <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+                    {% else %}
+                    <a>
+                    
+                    <form class="form-inline" action="{% url 'djangoapp:login' %}" method="post">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" placeholder="Username" name="username">
+                        <input type="password" class="form-control" placeholder="Password" name="psw">
+                        <button class="btn btn-primary" type="submit">Login</button>
+                        <a class="btn btn-link" href="{% url 'djangoapp:register' %}">Sign Up</a>
+                    </form>
+                    </a>
+
+                    {% endif %}
+                </li>
+                
+                
+
+            </ul>
+           
+        </nav>
+
+        <div class="container">
+            <h1>
+                Add a New Review 
+            </h1>
+            <form action="{% url 'djangoapp:addReview' dealer_id %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="inputReview">Review</label>
+                    <textarea class="form-control" id="inputReview" rows="3" placeholder="Enter your review" name="review"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="inputPurchase">Did you purchase</label>
+                    <input type="checkbox" class="form-control" id="inputPurchase" name="purchase">
+                </div>
+                <div class="form-group">
+                    <label for="inputPurchaseDate">Purchase Date</label>
+                    <input type="date" class="form-control" id="inputPurchaseDate" placeholder="Purchase Date" value="Null"name="purchase_date">
+                </div>
+                <div class="form-group">
+                    <label for="inputCarMake">Car Brand</label>
+                    <input type="text" class="form-control" id="inputCarMake" placeholder="Car Brand" value="Null" name="car_make">
+                </div>
+                <div class="form-group">
+                    <label for="inputCarModel">Car Model</label>
+                    <input type="text" class="form-control" id="inputCarModel" placeholder="Car Model" value="Null" name="car_model">
+                </div>
+                <div class="form-group">
+                    <label for="inputCarYear">Car Year</label>
+                    <input type="number" class="form-control" id="inputCarYear" placeholder="Car Year" value="Null" name="car_year">
+                </div>
+                {% if message %}
+                    <div class="alert alert-success">
+                        {{message}}
+                    </div>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+
+
+
+
     </body>
 </html>
