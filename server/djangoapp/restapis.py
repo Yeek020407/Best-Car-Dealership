@@ -56,8 +56,6 @@ def get_dealers_from_cf(url,**kwargs):
 def get_dealer_by_id(url,dealerId):
     results=[]
     json_result=get_request(url,id=dealerId)
-    print("***************")
-    print(json_result)
     for dealer in json_result:
         
         
@@ -78,7 +76,6 @@ def get_dealer_by_id(url,dealerId):
 def get_dealer_by_id_from_cf(url,dealerId):
     results=[]
     json_result=get_request(url,id=dealerId)
-    print(json_result)
     review_list = json_result['data']['docs']
     for review in review_list:
         review_text = review['review']
@@ -110,22 +107,17 @@ def analyze_review_sentiments(text):
 
     try:
         response = nlu.analyze(text=text,features=Features(sentiment=SentimentOptions())).get_result()
-        print(json.dumps(response))
 
         sentiment_label = response['sentiment']['document']['label']
 
     except:
-        print("Cant get sentiment")
         sentiment_label = "neutral"
 
-    print(sentiment_label)
     return sentiment_label
 
 
 def post_request(url,json_payload,**kwargs):
-
     response = requests.post(url,params=kwargs,json=json_payload)
-    print(json_payload)
-    print(response)
+
 
 

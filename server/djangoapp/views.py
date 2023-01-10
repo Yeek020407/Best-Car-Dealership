@@ -96,7 +96,6 @@ def get_dealer_details(request, dealer_id):
         reviews = get_dealer_by_id_from_cf(url1,dealer_id)
         dealer_details = get_dealer_by_id(url2,dealer_id)
         context['reviews']=reviews
-        print(reviews)
         context['dealer_details']=dealer_details
         return render(request,'djangoapp/dealer_details.html',context)
 
@@ -111,9 +110,6 @@ def add_review(request, dealer_id):
         if user.is_authenticated:
             context ={}
             carMake = CarMake.objects.all()
-            print(carMake)
-            print(carMake[1].carmodel_set.all())
-
             url = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/dealership"
             dealer_details = get_dealer_by_id(url,dealer_id)
             context['dealer_details']=dealer_details
