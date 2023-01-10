@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
+from .models import CarMake,CarModel
 from .restapis import get_dealers_from_cf,get_dealer_by_id_from_cf,get_dealer_by_id,post_request
 import logging
 import json
@@ -109,7 +110,14 @@ def add_review(request, dealer_id):
     if request.method == "GET":
         if user.is_authenticated:
             context ={}
-            context['dealer_id']=dealer_id
+            carMake = CarMake.objects.all()
+            print(carMake)
+            print(carMake[1].carmodel_set.all())
+
+            url = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/dealership"
+            dealer_details = get_dealer_by_id(url,dealer_id)
+            context['dealer_details']=dealer_details
+            context['carMake']=carMake
             return render(request,'djangoapp/add_review.html',context)
         else:
             context={}
@@ -127,15 +135,22 @@ def add_review(request, dealer_id):
                 review_details['purchase'] = True
                 review_details['review'] = request.POST.get('review')
                 review_details['purchase_date'] =request.POST['purchase_date']
-                review_details['car_make'] = request.POST['car_make']
-                review_details['car_model'] = request.POST['car_model']
-                review_details['car_year'] = request.POST['car_year']
+                carId = request.POST['car']
+                carModel = get_object_or_404(CarModel,pk=carId)
+                review_details['car_make'] = carModel.carMake.name
+                review_details['car_model'] = carModel.name
+                review_details['car_year'] = carModel.year
                 review_details['id'] = user.id
                 payload['review']=review_details
                 url = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/review"
                 post_request(url,payload)
+
+                #get dealer details
+                url2 = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/dealership"
+                dealer_details = get_dealer_by_id(url2,dealer_id)
+                context['dealer_details']=dealer_details
+
                 context['message']="The review is successfully added!"
-                context['dealer_id']=dealer_id
                 return render(request,'djangoapp/add_review.html',context)
 
             except:
@@ -154,7 +169,12 @@ def add_review(request, dealer_id):
                 url = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/review"
                 post_request(url,payload)
                 context['message']="The review is successfully added!"
-                context['dealer_id']=dealer_id
+                
+                # get dealer details
+                url2 = "https://us-south.functions.appdomain.cloud/api/v1/web/553466ab-3c3a-4993-af23-13d5e950cf92/default/dealership"
+                dealer_details = get_dealer_by_id(url2,dealer_id)
+                context['dealer_details']=dealer_details
+
                 return render(request,'djangoapp/add_review.html',context)
        
 

@@ -82,12 +82,20 @@
         {% for review in reviews %}
         <div class="col-sm-4">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-text-left">
-                        {{review.review}}
-                    </h5>
-                    <footer class="blockquote-footer">{{review.name}}</footer>
-                </div>
+                
+                {% if review.sentiment == "positive" %}
+                <img class="card-image-left" src="{{MEDIA_URL}}/emoji/positive.png" width="50" height="50">
+                {% elif review.sentiment == "negative" %}
+                <img class="card-image-left" src="{{MEDIA_URL}}/emoji/negative.png" width="50" height="50">
+                {% elif review.sentiment == "neutral" %}
+                <img class="card-image-left" src="{{MEDIA_URL}}/emoji/neutral.png" width="50" height="50">
+                {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-text-left">
+                            {{review.review}}
+                        </h5>
+                        <footer class="blockquote-footer">{{review.name}}</footer>
+                    </div>
             </div>
         </div>
         {% endfor %}

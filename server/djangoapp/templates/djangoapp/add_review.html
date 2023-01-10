@@ -55,34 +55,37 @@
 
         <div class="container">
             <h1>
-                Add a New Review 
+                Add a review
             </h1>
-            <form action="{% url 'djangoapp:addReview' dealer_id %}" method="post">
+            <form action="{% url 'djangoapp:addReview' dealer_details.id %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="inputReview">Review</label>
                     <textarea class="form-control" id="inputReview" rows="3" placeholder="Enter your review" name="review"></textarea>
                 </div>
-                <div class="form-group">
-                    <label for="inputPurchase">Did you purchase</label>
-                    <input type="checkbox" class="form-control" id="inputPurchase" name="purchase">
+                <div class="form-check">
+                    
+                    <input type="checkbox" class="form-check-input" id="inputPurchase" name="purchase">
+                    <label for="inputPurchase" id="form-check-label">Has purchased the car from {{dealer_details.full_name}} ?</label>
                 </div>
+                <select name="car" id="car" class="form-select" required>
+                    {% for car in carMake %}
+                        {% for carModel in car.carmodel_set.all %}
+                        <option selected value={{carModel.id}}>{{carModel.name}}-{{car.name}}-{{carModel.year|date:"Y"}}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+
+
+
+
                 <div class="form-group">
                     <label for="inputPurchaseDate">Purchase Date</label>
                     <input type="date" class="form-control" id="inputPurchaseDate" placeholder="Purchase Date" value="Null"name="purchase_date">
                 </div>
-                <div class="form-group">
-                    <label for="inputCarMake">Car Brand</label>
-                    <input type="text" class="form-control" id="inputCarMake" placeholder="Car Brand" value="Null" name="car_make">
-                </div>
-                <div class="form-group">
-                    <label for="inputCarModel">Car Model</label>
-                    <input type="text" class="form-control" id="inputCarModel" placeholder="Car Model" value="Null" name="car_model">
-                </div>
-                <div class="form-group">
-                    <label for="inputCarYear">Car Year</label>
-                    <input type="number" class="form-control" id="inputCarYear" placeholder="Car Year" value="Null" name="car_year">
-                </div>
+                <br/>
+
+
                 {% if message %}
                     <div class="alert alert-success">
                         {{message}}
