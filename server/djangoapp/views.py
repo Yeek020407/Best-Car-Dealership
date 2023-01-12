@@ -35,7 +35,9 @@ def contact(request):
 
 def login_request(request):
     context={}
-    if request.method == "POST":
+    if request.method =="GET":
+        return render (request,'djangoapp/login.html',context)
+    elif request.method == "POST":
         username=request.POST['username']
         password=request.POST['psw']
         user = authenticate(username=username,password=password)
@@ -44,7 +46,7 @@ def login_request(request):
             return redirect('djangoapp:index')
         else:
             context['message']="Invalid username or password"
-            return render(request,'djangoapp:login',context)
+            return render(request,'djangoapp/login.html',context)
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
