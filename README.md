@@ -7,4 +7,5 @@ A car dealership web application that allows the user to search for dealers and 
 * Django Web Framework
 * Bootstrap
 * IBM Cloudant
+* IBM Cloud Functions
 * IBM Watson Natural Language Understanding
